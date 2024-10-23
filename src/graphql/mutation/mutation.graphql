@@ -1,0 +1,3 @@
+type Mutation {
+      Test(token: String): Boolean
+  }
