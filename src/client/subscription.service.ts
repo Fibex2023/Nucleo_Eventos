@@ -41,7 +41,7 @@ export class SubscriptionService {
         
           // Puedes llamar a unsubscribe() para detener la suscripción cuando ya no la necesites
         }
-    }
+}
 
 let _SubscriptionService = new SubscriptionService();
 
