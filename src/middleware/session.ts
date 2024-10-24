@@ -1,6 +1,6 @@
 import { handleHttp } from "../utils/response.handle.js";
 
-const checkSession = (req, res, next) => {
+const checkSession = (req:any, res:any, next:any) => {
     try {
         const jwtRequest = req.headers.authorization || '';
         const jwt = jwtRequest?.split(' ').pop();

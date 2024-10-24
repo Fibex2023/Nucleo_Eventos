@@ -1,7 +1,7 @@
 import { handleHttp } from "../utils/response.handle.js";
 import { BaseService, TestApi } from "../services/file.service.js";
 
-const getFiles = async (req, res) => {
+const getFiles = async (req:any, res:any) => {
     try {
 
         const response =  BaseService();
@@ -11,7 +11,7 @@ const getFiles = async (req, res) => {
     }
 }
 
-const ListFilesC = async (req, res) => {
+const ListFilesC = async (req:any, res:any) => {
     try {
 
         const response = await TestApi('test');

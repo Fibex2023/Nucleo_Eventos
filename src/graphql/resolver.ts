@@ -3,17 +3,27 @@ import { PubSub } from 'graphql-subscriptions';
 const pubsub = new PubSub();
 
 export const resolvers = {
-    Query: {
-      hello: () => '¡Hola, mundo!',
+  Query: {
+    hello: () => '¡Hola, mundo!',
+  },
+  Subscription: {
+    messageSent: {
+      subscribe: () => pubsub.asyncIterator('MESSAGE_SENT'),
     },
-    Subscription: {
-        messageSent: {
-          subscribe: () => pubsub.asyncIterator('MESSAGE_SENT'),
-        },
+    nuevoEvento: {
+      subscribe: (_:any, { cedula }: { cedula: string }) => {
+        return pubsub.asyncIterator(`EVENTO_${cedula}`);
       },
+    },
+  },
 };
 
 // Función para publicar un mensaje
 export const sendMessage = (message: string) => {
-    pubsub.publish('MESSAGE_SENT', { messageSent: message });
-  };
+  pubsub.publish('MESSAGE_SENT', { messageSent: message });
+};
+
+// Cuando se produzca un nuevo evento, publica el evento en el canal correspondiente
+export const publicarEvento = (cedula: string, evento: any) => {
+  pubsub.publish(`EVENTO_${cedula}`, { nuevoEvento: evento });
+}

@@ -1,6 +1,6 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { typeDefs, resolvers, sendMessage } from './graphql/index.js';
+import { typeDefs, resolvers, sendMessage, publicarEvento } from './graphql/index.js';
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { makeExecutableSchema } from '@graphql-tools/schema';
@@ -52,8 +52,21 @@ const startServer = async () => {
 
 // // Ejemplo de cómo enviar un mensaje
 // setInterval(() => {
-//     console.log("Nuevo mensaje enviado");
-//     sendMessage('¡Nuevo mensaje enviado!');
+//     let evento = {
+//         id:20000,
+//         mensaje:'Esta recibiendo un mensaje'
+//     }
+//     console.log("Nuevo mensaje enviado 1");
+//     publicarEvento('26728159',evento);
 // }, 5000); // Envía un mensaje cada 5 segundos
+
+// setInterval(() => {
+//     let evento = {
+//         id:1000000,
+//         mensaje:'Esta recibiendo un mensaje'
+//     }
+//     console.log("Nuevo mensaje enviado 2");
+//     publicarEvento('12345678',evento);
+// }, 10000);
 
 startServer();

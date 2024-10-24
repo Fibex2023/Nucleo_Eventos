@@ -39,7 +39,6 @@ const fetchData = async (files:any) => {
     let Data:any = [];
     const promises = files.files.map(async (csv:any) => {
       const resp = await fetch('http://xxxxxx' + csv, {
-        'Content-Type': 'application/json',
         headers: { Authorization: 'Bearer xxxx' }
       });
 

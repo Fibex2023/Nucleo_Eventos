@@ -6,7 +6,7 @@
  * @param message 
  */
 
-const handleHttp = (res, type,message) => {
+const handleHttp = (res:any, type:any,message:any) => {
     switch (type) {
         case 'NOT_FOUND':
             res.status(404).send({ status: 404, message: message });

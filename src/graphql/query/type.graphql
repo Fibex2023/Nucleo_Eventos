@@ -5,3 +5,12 @@ type Query {
 type Subscription {
   messageSent: String
 }
+
+type Subscription {
+  nuevoEvento(cedula: String): Evento
+}
+
+type Evento {
+  id: ID!
+  mensaje: String!
+}
