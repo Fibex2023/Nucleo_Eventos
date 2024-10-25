@@ -1,8 +1,8 @@
 import { createClient } from 'graphql-ws'
 import WebSocket from 'ws'; // Importa la implementación de WebSocket
 
-process.loadEnvFile()
-let urlwsocket = process.env.URLWS ?? '';;
+// process.loadEnvFile()
+let urlwsocket = process.env.URLWS ?? 'http://localhost:4001/Thomas';;
 
 export class SubscriptionService {
 
@@ -20,6 +20,7 @@ export class SubscriptionService {
                 subscription($cedula: String!) {
                   nuevoEvento(cedula: $cedula) {
                     id
+                    tipo_mensaje
                     mensaje
                   }
                 }

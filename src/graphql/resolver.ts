@@ -25,5 +25,7 @@ export const sendMessage = (message: string) => {
 
 // Cuando se produzca un nuevo evento, publica el evento en el canal correspondiente
 export const publicarEvento = (cedula: string, evento: any) => {
+  // aqui devo devolver una promesa porque sino tengo esa cedula suscrita entonce no mando nada 
+  // si la cedila esta suscrita entonces le mando
   pubsub.publish(`EVENTO_${cedula}`, { nuevoEvento: evento });
 }

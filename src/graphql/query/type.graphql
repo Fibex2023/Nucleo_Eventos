@@ -12,5 +12,6 @@ type Subscription {
 
 type Evento {
   id: ID!
+  tipo_mensaje: String!
   mensaje: String!
 }
