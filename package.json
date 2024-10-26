@@ -22,6 +22,7 @@
     "graphql-tools": "^9.0.2",
     "graphql-ws": "^5.16.0",
     "node-fetch": "^3.3.2",
+    "ts-node": "^10.9.2",
     "uuid": "^10.0.0",
     "ws": "^8.18.0"
   },

@@ -1,6 +1,20 @@
 type Query {
     hello: String
   }
+type Query {
+    bello: String
+  }
+
+type Query {
+    sendMessage(
+      abonado: String!, 
+      tipo_mensaje: String!, 
+      app: String!, 
+      mensaje: String!
+    ): String
+}
+
+  
 
 type Subscription {
   messageSent: String
@@ -11,7 +25,7 @@ type Subscription {
 }
 
 type Evento {
-  id: ID!
-  tipo_mensaje: String!
-  mensaje: String!
+  app: String
+  tipo_mensaje: String
+  mensaje: String
 }

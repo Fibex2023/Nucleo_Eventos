@@ -18,6 +18,7 @@ const handleHttp = (res:any, type:any,message:any) => {
             res.status(403).send({ status: 403, message: message });
             break;
         case 'SUCCESS':
+            console.log("handle 21");
             res.status(200).send({ status: 200, data: message });
             break;
     }

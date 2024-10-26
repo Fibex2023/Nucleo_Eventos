@@ -1,0 +1,75 @@
+import express, { Request, Response, NextFunction } from 'express';
+import { ApolloServer, gql } from 'apollo-server-express';
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { Server } from 'http';
+
+const typeDefs = gql`
+  type Query {
+    _empty: String
+  }
+  type Subscription {
+    message: String
+  }
+`;
+
+const resolvers = {
+  Subscription: {
+    message: {
+      subscribe: () => asyncIterator(['MESSAGE']),
+    },
+  },
+};
+
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+const whitelist = ['127.0.0.1', '::1'];
+
+const ipWhitelistMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const clientIp:any = req.ip;
+  if (whitelist.includes(clientIp)) {
+    next();
+  } else {
+    res.status(403).send('Forbidden');
+  }
+};
+
+const app = express();
+app.use(ipWhitelistMiddleware);
+
+const servers: Server[] = [];
+
+for (let i = 0; i < 5; i++) {
+  const server = app.listen(4000 + i, () => {
+    console.log(`Server ready at http://localhost:${4000 + i}/graphql`);
+  });
+  servers.push(server);
+}
+
+servers.forEach(httpServer => {
+  const wsServer = new WebSocketServer({ server: httpServer, path: '/graphql' });
+  useServer({ schema }, wsServer);
+});
+
+const server = new ApolloServer({ schema });
+server.applyMiddleware({ app });
+
+// Ejemplo de función para enviar mensajes entre servidores
+const sendMessageToPort = (port: number, message: string) => {
+  const targetServer = servers.find(server => server.address().port === port);
+  if (targetServer) {
+    const ws = new WebSocket(`ws://localhost:${port}/graphql`);
+    ws.on('open', () => {
+      ws.send(message);
+      ws.close();
+    });
+  }
+};
+
+// Ejemplo de uso de la función
+sendMessageToPort(4001, 'Hello from port 4000!');
+function asyncIterator(arg0: string[]) {
+    throw new Error('Function not implemented.');
+}
+
