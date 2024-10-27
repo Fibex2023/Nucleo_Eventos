@@ -1,0 +1,112 @@
+import express, { Request, Response, NextFunction } from 'express';
+import { ApolloServer, gql } from 'apollo-server-express';
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { Server } from 'http';
+
+const typeDefs = gql`
+  type Query {
+    _empty: String
+  }
+
+  type Subscription {
+    message: String
+  }
+`;
+const activeSubscriptions = new Map<any, any>(); // Mapear identificadores de suscripciones a clientes
+
+const resolvers = {
+  Subscription: {
+    message: {
+      subscribe: (_: any, args: any, context: any) => {
+        const id = context.connectionParams.clientID;
+        activeSubscriptions.set(id, context);
+
+        context.req.on('close', () => {
+          activeSubscriptions.delete(id);
+        });
+
+        return asyncIterator(['MESSAGE']);
+      },
+    },
+  },
+};
+
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+const whitelist = ['127.0.0.1', '::1'];
+
+const ipWhitelistMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const clientIp:any = req.ip;
+  if (whitelist.includes(clientIp)) {
+    next();
+  } else {
+    res.status(403).send('Forbidden');
+  }
+};
+
+const app = express();
+app.use(ipWhitelistMiddleware);
+
+const servers: Server[] = [];
+
+for (let i = 0; i < 5; i++) {
+  const server = app.listen(4000 + i, () => {
+    console.log(`Server ready at http://localhost:${4000 + i}/graphql`);
+  });
+  servers.push(server);
+}
+
+servers.forEach(httpServer => {
+  const wsServer = new WebSocketServer({ server: httpServer, path: '/graphql' });
+  useServer(
+    {
+      schema,
+      onConnect: (context: any) => {
+        console.log('Cliente suscrito a', context.connectionParams);
+        const id = context.connectionParams.clientID;
+        activeSubscriptions.set(id, context);
+      },
+      onSubscribe: (context, message) => {
+        console.log('Suscripción iniciada con payload:', message.payload);
+      },
+      onDisconnect: (context: any, code, reason) => {
+        console.log('Cliente desconectado:', code, reason);
+        const id = context.connectionParams.clientID;
+        activeSubscriptions.delete(id);
+      },
+    },
+    wsServer
+  );
+});
+
+const server:any = new ApolloServer({
+  schema,
+  context: ({ req, connection }) => {
+    if (connection) {
+      return connection.context;
+    }
+    return {};
+  },
+});
+server.applyMiddleware({ app });
+
+// Ejemplo de función para enviar mensajes entre servidores
+const sendMessageToPort = (port: number, message: string) => {
+  const targetServer = servers.find(server => server.address().port === port);
+  if (targetServer) {
+    const ws: any = new WebSocket(`ws://localhost:${port}/graphql`);
+    ws.on('open', () => {
+      ws.send(message);
+      ws.close();
+    });
+  }
+};
+
+// Ejemplo de uso de la función
+sendMessageToPort(4001, 'Hello from port 4000!');
+
+function asyncIterator(arg0: string[]) {
+  throw new Error('Function not implemented.');
+}

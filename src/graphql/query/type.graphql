@@ -1,9 +1,14 @@
 type Query {
     hello: String
-  }
+}
+
 type Query {
-    bello: String
-  }
+    Conectados: String
+}
+
+type Query {
+  GetBuffer: String
+}
 
 type Query {
     sendMessage(

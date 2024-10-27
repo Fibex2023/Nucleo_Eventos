@@ -1,9 +1,10 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { typeDefs, resolvers, sendMessage, publicarEvento } from './graphql/index.js';
+import { typeDefs, resolvers, sendMessage, publicarEvento, activeSubscriptions, _JSONBuffer } from './graphql/index.js';
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { makeExecutableSchema } from '@graphql-tools/schema';
+ 
 
 
 interface Config {
@@ -12,10 +13,11 @@ interface Config {
 }
 
 class Nucleo {
+    public _JSONBuffer: any = _JSONBuffer;
     constructor() {
-
+        // Ejemplo de uso 
     }
-    public activeSubscriptions = new Map<string, any>(); // Mapear identificadores de suscripciones a clientes
+    public _activeSubscriptions = activeSubscriptions; // Mapear identificadores de suscripciones a clientes
 
     async startServer (Puerto: Config)  { 
         let TotalSuscripciones = 0;
@@ -40,13 +42,23 @@ class Nucleo {
             }
             });
           // }
+
+
+        
+          
     
     
         // Schema
         const schema = makeExecutableSchema({ typeDefs, resolvers });
     
         // Apollo Server
-        const apolloServer = new ApolloServer({ schema });
+        // const apolloServer = new ApolloServer({ schema });
+        const apolloServer:any = new ApolloServer({
+            schema,
+            context: ({ req }) => {              
+              return {};
+            },
+          });
     
         // Inicia el servidor Apollo
         await apolloServer.start();
@@ -65,11 +77,9 @@ class Nucleo {
                 schema,
                 onConnect: (ctx: any) => {
                     try {
-                        console.log(`Cliente conectado: ${JSON.stringify(ctx)}`);
+                       // console.log(`Cliente conectado: ${JSON.stringify(ctx)}`);
                         TotalSuscripciones = TotalSuscripciones + 1
-                        console.log('Cliente suscrito a', ctx.connectionParams)
-                        const id = ctx.connectionParams.clientID;
-                        this.activeSubscriptions.set(id, ctx)
+                       
                         console.log(`Total de clientes suscritos ${TotalSuscripciones}`)
                     } catch (error) {
                         console.error(error)
@@ -79,18 +89,63 @@ class Nucleo {
                 onDisconnect: (ctx:any, msg, reason) => {
                     // console.log('Cliente desconectado:'); // Aquí puedes manejar la desconexión
                     TotalSuscripciones = TotalSuscripciones - 1    
-                                    
-                    const id = ctx.connectionParams.clientID
-                    this.activeSubscriptions.delete(id);
-                    console.log('Cliente desconectado:', id) 
+
+                    // const id = ctx.connectionParams.clientID
+                     this._activeSubscriptions.delete(ctx);
+                //    Array.from(this._activeSubscriptions.keys())
+                    // console.log('Cliente desconectado:', id) 
+                    console.log(Array.from(this._activeSubscriptions.values()))
                     console.log(`Total de clientes suscritos ${TotalSuscripciones}`)
                 },
-                onSubscribe: (context, message) => {
-                    // Aqui tengo el control de quien está Conectado
-                    // Tender una clase que me control esto
-                   // console.log(message);
-                   // console.log(context); 
-                    console.log('Suscripción iniciada con payload:', message.payload.variables);
+                onSubscribe: async (context, message) => {
+                    
+                    
+                   // console.log(message);                    // console.log(context);                    
+                   // const id = context.connectionParams.clientID;
+                   // control de quien está Conectado
+                   this._activeSubscriptions.set(context, message.payload.variables)
+                   const validateArray = (element: any): boolean => {
+                        return Array.isArray(element);
+                   }                  
+                   // Busco si tendo algo en el Buffer para ese usuario
+                   const Data:any = await _JSONBuffer.findDataById(message.payload.variables) 
+                   
+                   if (Data) {
+                        console.log(Data);
+                        let currentIndex = 0;
+
+                        const sendArrayElement = () => {  
+                                if (currentIndex < Data.length) {
+                                    if (validateArray(Data)) {
+                                        console.log("PASE120")       
+                                        const element = Data[currentIndex];
+                                        publicarEvento(element.id, element.message);
+                                        // Deberia borrar el elemento del buffer                                
+                                        currentIndex++;
+                                    } else {
+                                        console.log("PASE126-2")       
+                                    }                                   
+                                } else { 
+                                        console.log("PASE127")       
+                                        publicarEvento(Data.id, Data.message);                            
+                                        clearInterval(intervalId); // Detener el intervalo cuando se hayan enviado todos los elementos                                         
+                                    }
+                        };
+                        let intervalId: any;
+                        if (!validateArray(Data)) { 
+                            // Deberia borrar el elemento del buffer    
+                            console.log("PASE126")       
+                            // Espero para entregarle la date que tengo.                           
+                            intervalId = setInterval(sendArrayElement, 1000)
+                        } else  {
+                            intervalId = setInterval(sendArrayElement, 10000)
+                        }
+                        
+                        
+                   }
+                   // Me permite mostrar todos los conectados
+                   // console.log(JSON.stringify(_JSONBuffer.getAllData()))                   
+                   console.log('Suscripción iniciada con payload:', message.payload.variables);
                 }
             }, wsocket);
     
