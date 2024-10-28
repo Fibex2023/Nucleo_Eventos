@@ -1,12 +1,11 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express'
 import { ApolloServer } from 'apollo-server-express';
+import compression from 'compression';
 import { typeDefs, resolvers, sendMessage, publicarEvento, activeSubscriptions, _JSONBuffer } from './graphql/index.js';
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { makeExecutableSchema } from '@graphql-tools/schema';
  
-
-
 interface Config {
     port: number;
     whitelist: string[];
@@ -26,6 +25,16 @@ class Nucleo {
     
         // Lista blanda de IPs permitidas para el puerto 4001
         const whitelist = Puerto.whitelist 
+
+        const ipWhitelistMiddleware = (req: Request, res: Response, next: NextFunction) => {
+            const clientIp: any = req.ip;
+            if (whitelist.includes(clientIp)) {
+              next();
+            } else {
+              res.status(403).send('Forbidden');
+            }
+        }
+            
         const port = Puerto.port;
     
         // Inicializo express
@@ -33,16 +42,18 @@ class Nucleo {
     
           // Middleware para verificar IP solo en el puerto 4001
            // if (port === 4001) {
-            app.use((req, res, next) => {
-            const clientIp:any = req.ip; // Obtiene la IP del cliente
-            if (whitelist.includes(clientIp)) {
-                next(); // Permite la solicitud si la IP está en la lista
-            } else {
-                res.status(403).send(`Acceso denegado ${clientIp}`); // Deniega el acceso si no está permitido
-            }
-            });
+          /*  app.use((req, res, next) => {
+                const clientIp:any = req.ip; // Obtiene la IP del cliente
+                if (whitelist.includes(clientIp)) {
+                    next(); // Permite la solicitud si la IP está en la lista
+                } else {
+                    res.status(403).send(`Acceso denegado ${clientIp}`); // Deniega el acceso si no está permitido
+                }
+            });*/
           // }
 
+          app.use(compression()); // Usar gzip
+          app.use(ipWhitelistMiddleware);
 
         
           
@@ -111,34 +122,34 @@ class Nucleo {
                    const Data:any = await _JSONBuffer.findDataById(message.payload.variables) 
                    
                    if (Data) {
-                        console.log(Data);
+                        // console.log(Data);
                         let currentIndex = 0;
 
-                        const sendArrayElement = () => {  
+                        const sendArrayElement = async () => {  
                                 if (currentIndex < Data.length) {
-                                    if (validateArray(Data)) {
-                                        console.log("PASE120")       
+                                    if (validateArray(Data)) {                                        
                                         const element = Data[currentIndex];
+                                        await _JSONBuffer.deleteData(_element => _element.id == element.id) 
                                         publicarEvento(element.id, element.message);
                                         // Deberia borrar el elemento del buffer                                
                                         currentIndex++;
                                     } else {
+                                        // No est
                                         console.log("PASE126-2")       
                                     }                                   
                                 } else { 
-                                        console.log("PASE127")       
+                                        
                                         publicarEvento(Data.id, Data.message);                            
                                         clearInterval(intervalId); // Detener el intervalo cuando se hayan enviado todos los elementos                                         
                                     }
                         };
                         let intervalId: any;
                         if (!validateArray(Data)) { 
-                            // Deberia borrar el elemento del buffer    
-                            console.log("PASE126")       
+                            // Deberia borrar el elemento del buffer                                
                             // Espero para entregarle la date que tengo.                           
                             intervalId = setInterval(sendArrayElement, 1000)
-                        } else  {
-                            intervalId = setInterval(sendArrayElement, 10000)
+                        } else  {                            
+                            intervalId = setInterval(sendArrayElement, 3000)
                         }
                         
                         

@@ -46,5 +46,5 @@ export class SubscriptionService {
 
 let _SubscriptionService = new SubscriptionService();
 
-_SubscriptionService.subscribeToData('13457627');
+_SubscriptionService.subscribeToData('1');
 

@@ -63,9 +63,13 @@ export const publicarEvento = (cedula: string, evento: any) => {
     pubsub.publish(`EVENTO_${cedula}`, { nuevoEvento: evento });
   } else {
     // Agrego en el buffer
-    // El buffer se va a mantener por 24H
-    console.log("La cedula a la que le intentas no está conectada, voy a guardar el Buffer")
-    _JSONBuffer.addData({ id: cedula, message: evento });
+    // El buffer se va a mantener por 24H     
+    console.log("1La cedula a la que le intentas no está conectada, voy a guardar el Buffer", evento)
+    if (cedula != undefined && evento != undefined) 
+    {
+      console.log("2La cedula a la que le intentas no está conectada, voy a guardar el Buffer", evento)
+      _JSONBuffer.addData({ id: cedula, message: evento });
+    }
 
   }
   

@@ -1,13 +1,5 @@
 [
   {
-    "id": "13457626",
-    "message": {
-      "app": "averias2",
-      "tipo_mensaje": "50",
-      "mensaje": "{port: 5, l: 6}"
-    }
-  },
-  {
     "id": 1,
     "message": "Hola mundo"
   },
@@ -87,6 +79,7 @@
     "id": 2,
     "message": "Otro mensaje"
   },
+  {},
   {
     "id": 1,
     "message": "Hola mundo"
@@ -103,28 +96,18 @@
     "id": 2,
     "message": "Otro mensaje"
   },
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
   {
-    "id": 1,
-    "message": "Hola mundo"
-  },
-  {
-    "id": 2,
-    "message": "Otro mensaje"
-  },
-  {
-    "id": 1,
-    "message": "Hola mundo"
-  },
-  {
-    "id": 2,
-    "message": "Otro mensaje"
-  },
-  {
-    "id": 1,
-    "message": "Hola mundo"
-  },
-  {
-    "id": 2,
-    "message": "Otro mensaje"
+    "id": "2",
+    "message": {
+      "app": "averias2",
+      "tipo_mensaje": "58",
+      "mensaje": "{port: 5, l: 6}"
+    }
   }
 ]

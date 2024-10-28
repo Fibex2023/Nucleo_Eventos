@@ -15,6 +15,11 @@ export class JSONBuffer {
 
   // Método para agregar información al buffer
   addData(data: any): void {
+    console.log("Pase... 18", data);
+    if (!data || Object.keys(data).length === 0) {
+        console.error('Data is empty or null');
+        return;
+    }  
     this.buffer.push(data);
     this.writeBuffer(this.buffer);
   }
@@ -28,6 +33,8 @@ export class JSONBuffer {
 
   // Método para borrar un solo registro del buffer
   deleteData(criteria: (item: any) => boolean): void {
+    // Tengo un problema aqui estoy borrando todos los elementos del mismo ID eso 
+    // se debe mejorar para borar solo el elemento que acabo de enviar
     this.buffer = this.buffer.filter(item => !criteria(item));
     this.writeBuffer(this.buffer);
   }
@@ -51,7 +58,7 @@ export class JSONBuffer {
 
   // Método para buscar un elemento por id
   public async findDataById(id: any): Promise<any | null> {
-    const item = await this.buffer.find((element: any) => element.id === id.cedula);
+    const item = await this.buffer.filter((element: any) => element.id === id.cedula);   
     return item || null;
   }
 
@@ -62,12 +69,13 @@ export class JSONBuffer {
 }
 
 // Ejemplo de uso
-const buffer = new JSONBuffer('buffer.json');
+// Jhonattan Ramirez
+//const buffer = new JSONBuffer('buffer.json');
 
 // Agregar datos al buffer
-buffer.addData({ id: 1, message: 'Hola mundo' });
-buffer.addData({ id: 2, message: 'Otro mensaje' });
+//buffer.addData({ id: 1, message: 'Hola mundo' });
+//buffer.addData({ id: 2, message: 'Otro mensaje' });
 
 // Mostrar todo el buffer
-const allData = buffer.getAllData();
-console.log(allData); // [{ id: 1, message: 'Hola mundo' }, { id: 2, message: 'Otro mensaje' }]
+//const allData = buffer.getAllData();
+//console.log(allData); // [{ id: 1, message: 'Hola mundo' }, { id: 2, message: 'Otro mensaje' }]
