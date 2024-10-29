@@ -11,10 +11,11 @@ export const resolvers = {
     hello: () => '¡Hola, mundo!', 
     Conectados: () => `Conectados ${JSON.stringify(Array.from(activeSubscriptions.values()))}`, 
     GetBuffer: () => `GetBuffer ${JSON.stringify(_JSONBuffer.getAllData())}`, 
-    sendMessage: (_: any, { abonado, tipo_mensaje, app, mensaje }: 
-      { abonado: string, tipo_mensaje: string, app: string, mensaje: string }) => {
+    sendMessage: (_: any, { abonado, idUnicoConect, tipo_mensaje, app, mensaje }: 
+      { abonado: string, idUnicoConect: string, tipo_mensaje: string, app: string, mensaje: string }) => {
       // Aquí puedes añadir la lógica para manejar estos parámetros
       let evento = {
+        idUnicoConect: idUnicoConect,
         app:app,
         tipo_mensaje: tipo_mensaje,
         mensaje: mensaje 
@@ -29,10 +30,15 @@ export const resolvers = {
       subscribe: () => pubsub.asyncIterator('MESSAGE_SENT'),
     },
     nuevoEvento: {
-      subscribe: (_:any, { cedula }: { cedula: string }, context: any) => {  
-        return pubsub.asyncIterator(`EVENTO_${cedula}`);
+      subscribe: (_:any, { id }: { id: string }, context: any) => {  
+        return pubsub.asyncIterator(`EVENTO_${id}`);
       },
     },
+    SendMsgApp: {
+      subscribe: (_:any, { app }: { app: string }, context: any) => {  
+        return pubsub.asyncIterator(`EVENTO_${app}`);
+      },
+    }
   },
 };
 
@@ -44,31 +50,31 @@ export const sendMessage = (message: string) => {
 const findSubscriptionByValue = (value: any): any | null => {
   for (let [id, context] of activeSubscriptions.entries()) {
     if (Object.values(context).includes(value)) {
+      activeSubscriptions.get(id).TimerUltMensaje = Date.now()
+      console.log(activeSubscriptions.get(id))
       return { id, context };
     }
   }
   return null;
 }
 // Cuando se produzca un nuevo evento, publica el evento en el canal correspondiente
-export const publicarEvento = (cedula: string, evento: any) => {
+export const publicarEvento = (id: string, evento: any) => {
   // aqui devo devolver una promesa porque sino tengo esa cedula suscrita entonce no mando nada 
   // si la cedila esta suscrita entonces le mando
   // Control de clientes suscritos con un maps verifico en el maps si lo tengo conectado  
   // Debo buscar en el Maps ese valos por ahora lo tengo en un for
-  const subscription = findSubscriptionByValue(cedula);
+  const subscription = findSubscriptionByValue(id);
   if (subscription) {
     console.log("La cedula a la que le intentas enviar si está conetado")
-    console.log(`EVENTO_${cedula}`);
+    console.log(`EVENTO_${id}`);
     console.log(evento);
-    pubsub.publish(`EVENTO_${cedula}`, { nuevoEvento: evento });
+    pubsub.publish(`EVENTO_${id}`, { nuevoEvento: evento });
   } else {
     // Agrego en el buffer
-    // El buffer se va a mantener por 24H     
-    console.log("1La cedula a la que le intentas no está conectada, voy a guardar el Buffer", evento)
-    if (cedula != undefined && evento != undefined) 
-    {
-      console.log("2La cedula a la que le intentas no está conectada, voy a guardar el Buffer", evento)
-      _JSONBuffer.addData({ id: cedula, message: evento });
+    // El buffer se va a mantener por 24H         
+    if (id != undefined && evento != undefined) 
+    {      
+      _JSONBuffer.addData({ id: id, message: evento });
     }
 
   }

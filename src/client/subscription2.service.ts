@@ -13,19 +13,19 @@ export class SubscriptionService {
     });
 
     // Función para iniciar la suscripción
-    async subscribeToData(cedula:string) {
+    async subscribeToData(id:string) {
         const unsubscribe = await this.client.subscribe(
             {
               query: `
-                subscription($cedula: String!) {
-                  nuevoEvento(cedula: $cedula) {
+                subscription($id: String!) {
+                  nuevoEvento(id: $id) {
                     app
                     tipo_mensaje
                     mensaje
                   }
                 }
               `,
-              variables: { cedula }, // Pasa la cédula como variable
+              variables: { id }, // Pasa la cédula como variable
             },
             {
               next(data) {
@@ -46,5 +46,5 @@ export class SubscriptionService {
 
 let _SubscriptionService = new SubscriptionService();
 
-_SubscriptionService.subscribeToData('1');
+_SubscriptionService.subscribeToData('2');
 

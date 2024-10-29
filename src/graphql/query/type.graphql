@@ -11,26 +11,38 @@ type Query {
 }
 
 type Query {
-    sendMessage(
+    sendMessage(           
       abonado: String!, 
       tipo_mensaje: String!, 
       app: String!, 
       mensaje: String!
     ): String
-}
-
-  
+}  
 
 type Subscription {
   messageSent: String
 }
 
-type Subscription {
-  nuevoEvento(cedula: String): Evento
-}
-
 type Evento {
+  idUnicoConect: String
   app: String
   tipo_mensaje: String
   mensaje: String
 }
+
+type Subscription {
+  nuevoEvento(id: String): Evento
+}
+
+
+type SendMsgApp { 
+  idUnicoConect: String 
+  destinatario: String
+  tipo_mensaje: String
+  mensaje: String
+}
+
+type Subscription {
+  SendMsgApp(id: String): SendMsgApp
+}
+

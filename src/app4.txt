@@ -69,7 +69,7 @@ class Nucleo {
           schema,
           onConnect: (ctx: any) => {
             try {
-              TotalSuscripciones = TotalSuscripciones + 1;              
+              TotalSuscripciones = TotalSuscripciones + 1;
               console.log(`Total de clientes suscritos ${TotalSuscripciones}`);
             } catch (error) {
               console.error(error);
@@ -77,21 +77,12 @@ class Nucleo {
           },
           onDisconnect: (ctx: any, msg, reason) => {
             TotalSuscripciones = TotalSuscripciones - 1;
-            console.log(ctx.IdAbonado);
-            this._activeSubscriptions.delete(ctx.IdAbonado);
-            // console.log(Array.from(this._activeSubscriptions.values()));
+            this._activeSubscriptions.delete(ctx);
+            console.log(Array.from(this._activeSubscriptions.values()));
             console.log(`Total de clientes suscritos ${TotalSuscripciones}`);
           },
-          onSubscribe: async (context: any, message: any) => {
-            // La idea es tener un identificador unico de conexion
-            // Esto mejora el Maps que tengo
-            context.IdAbonado = message.payload.variables.id
-
-            // Guardo la hora en la que se conecto
-            message.payload.variables.TimerConet = Date.now()
-            message.payload.variables.TimerUltMensaje = Date.now()
-            // Agrego al Maps el abonado conectado
-            this._activeSubscriptions.set(context.IdAbonado, message.payload.variables);
+          onSubscribe: async (context, message) => {
+            this._activeSubscriptions.set(context, message.payload.variables);
 
             const validateArray = (element: any): boolean => {
               return Array.isArray(element);

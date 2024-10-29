@@ -13,19 +13,20 @@ export class SubscriptionService {
     });
 
     // Función para iniciar la suscripción
-    async subscribeToData(cedula:string) {
+    async subscribeToData(id:string) {
         const unsubscribe = await this.client.subscribe(
             {
               query: `
-                subscription($cedula: String!) {
-                  nuevoEvento(cedula: $cedula) {
+                subscription($id: String!) {
+                  nuevoEvento(id: $id) {
+                    idUnicoConect
                     app
                     tipo_mensaje
                     mensaje
                   }
                 }
               `,
-              variables: { cedula }, // Pasa la cédula como variable
+              variables: { id }, // Pasa la cédula como variable
             },
             {
               next(data) {
@@ -44,7 +45,17 @@ export class SubscriptionService {
         }
 }
 
-let _SubscriptionService = new SubscriptionService();
+let i = 0;
+const _SubscriptionService: SubscriptionService[] = [];
 
-_SubscriptionService.subscribeToData('13457626');
-
+const intervalId = setInterval(() => {
+  if (i < 20000) {
+    _SubscriptionService.push(new SubscriptionService());
+    _SubscriptionService[i].subscribeToData('1345762' + i);
+    console.log(`Suscripción ${i} iniciada`);
+    i++;
+  } else {
+    clearInterval(intervalId);
+    console.log('Todas las suscripciones iniciadas');
+  }
+}, 1000); // 1000 milisegundos = 1 segundo

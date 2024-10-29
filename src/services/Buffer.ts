@@ -58,7 +58,7 @@ export class JSONBuffer {
 
   // Método para buscar un elemento por id
   public async findDataById(id: any): Promise<any | null> {
-    const item = await this.buffer.filter((element: any) => element.id === id.cedula);   
+    const item = await this.buffer.filter((element: any) => element.id === id.id);   
     return item || null;
   }
 
