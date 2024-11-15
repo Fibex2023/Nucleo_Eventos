@@ -54,5 +54,29 @@
       "tipo_mensaje": "55",
       "mensaje": "{port: 5, l: 6}"
     }
+  },
+  {
+    "id": "1515",
+    "message": {
+      "app": "test",
+      "tipo_mensaje": "api",
+      "mensaje": "{ metodo: 'get', ulr: 'https://httpbin.org/get' }"
+    }
+  },
+  {
+    "id": "1515",
+    "message": {
+      "app": "test",
+      "tipo_mensaje": "api",
+      "mensaje": "{ metodo: 'get', ulr: 'https://httpbin.org/get' }"
+    }
+  },
+  {
+    "id": "22",
+    "message": {
+      "app": "test",
+      "tipo_mensaje": "api2",
+      "mensaje": "{ 'metodo': 'get', 'url': 'https://httpbin.org/get' }"
+    }
   }
 ]

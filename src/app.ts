@@ -6,6 +6,7 @@ import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { Config, GetEnv } from './services/GetEnv.js';
+import { clsApiHttp } from './services/ApiHttp.js';
 
  
 
@@ -90,6 +91,7 @@ class Nucleo {
             // Guardo la hora en la que se conecto
             message.payload.variables.TimerConet = Date.now()
             message.payload.variables.TimerUltMensaje = Date.now()
+            message.payload.variables.clsApiHttp = new clsApiHttp
             // Agrego al Maps el abonado conectado
             this._activeSubscriptions.set(context.IdAbonado, message.payload.variables);
 
