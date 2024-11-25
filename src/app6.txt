@@ -2,26 +2,21 @@ import express, { Request, Response, NextFunction } from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import compression from 'compression';
 import { typeDefs, resolvers, sendMessage, publicarEvento, activeSubscriptions, _JSONBuffer } from './graphql/index.js';
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { Config, GetEnv } from './services/GetEnv.js';
 
- 
-
 class Nucleo {
-  private _JSONBuffer: any = _JSONBuffer;  
+  private _JSONBuffer: any = _JSONBuffer;
   public _activeSubscriptions = activeSubscriptions; // Mapear identificadores de suscripciones a clientes
-  
+
   constructor() {
     // Ejemplo de uso
   }
 
-  
-
   async startServer(Puerto: Config) {
     let TotalSuscripciones = 0;
-
     // Lista blanda de IPs permitidas para el puerto
     const whitelist = Puerto.whitelist;
     const ipWhitelistMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -34,12 +29,10 @@ class Nucleo {
     };
 
     const port = Puerto.port;
-
     // Inicializo express
     const app = express();
-
     app.use(compression()); // Usar gzip
-    // app.use(ipWhitelistMiddleware);    // Bloqueo por IP
+    app.use(ipWhitelistMiddleware);
 
     // Schema
     const schema = makeExecutableSchema({ typeDefs, resolvers });
@@ -64,58 +57,87 @@ class Nucleo {
         path: apolloServer.graphqlPath,
       });
 
+      // Configurar ping/pong para keep-alive
+      wsocket.on('connection', (socket: any, req) => {
+        socket.isAlive = true;
+
+        socket.on('pong', () => {
+          socket.isAlive = true;
+        });
+
+        socket.on('close', () => {
+          TotalSuscripciones -= 1;
+          const clientId = socket.clientId;
+          if (clientId) {
+            this._activeSubscriptions.delete(clientId);
+            console.log(`Cliente Desconectado: ${clientId}`);
+            console.log(`Total de clientes suscritos ${TotalSuscripciones}`);
+          }
+        });
+
+        // Inicializar cliente al conectarse
+        socket.clientId = req.headers['sec-websocket-key']; // Usar la clave de WebSocket como ID único
+        this._activeSubscriptions.set(socket.clientId, { connectTime: Date.now() });
+        TotalSuscripciones += 1;
+        console.log(`Total de clientes suscritos ${TotalSuscripciones}`);
+      });
+
+      // Revisar el estado de las conexiones cada 30 segundos
+      const interval = setInterval(() => {
+        wsocket.clients.forEach((socket: any) => {
+          if (!socket.isAlive) {
+            return socket.terminate();
+          }
+          socket.isAlive = false;
+          socket.ping();
+        });
+      }, 30000);
+
       useServer(
         {
           schema,
           onConnect: (ctx: any) => {
             try {
-              TotalSuscripciones = TotalSuscripciones + 1;              
+              TotalSuscripciones += 1;
               console.log(`Total de clientes suscritos ${TotalSuscripciones}`);
+
+              // Establecer un temporizador para desconectar después de 3 minutos
+              const timer = setTimeout(() => {
+                ctx.connection.terminate(); // Desconectar el cliente
+                console.log(`Cliente desconectado por inactividad: ${ctx.connection.remoteAddress}`);
+              }, 3 * 60 * 1000); // 3 minutos en milisegundos
+
+              // Guardar el temporizador en el contexto
+              ctx.timer = timer;
+
             } catch (error) {
               console.error(error);
             }
           },
           onDisconnect: (ctx: any, msg, reason) => {
-            TotalSuscripciones = TotalSuscripciones - 1;
-            console.log(`Cliente Desconectado: ${ctx.IdAbonado}`);
-            // Lo elimino del Maps de Control
-            this._activeSubscriptions.delete(ctx.IdAbonado);
-            // console.log(Array.from(this._activeSubscriptions.values()));
+            TotalSuscripciones -= 1;
+            clearTimeout(ctx.timer); // Limpiar el temporizador
+            this._activeSubscriptions.delete(ctx); 
+            console.log(Array.from(this._activeSubscriptions.values()));
             console.log(`Total de clientes suscritos ${TotalSuscripciones}`);
           },
           onSubscribe: async (context: any, message: any) => {
-            // La idea es tener un identificador unico de conexion
-            // Esto mejora el Maps que tengo
-            
-
-            // Guardo la hora en la que se conecto            
-            context.IdAbonado = message.payload.variables.id
-            
+            context.IdAbonado = message.payload.variables.id;
             const DataControlConect = {
-                ...message.payload.variables,   // me da el id de la conexion                
-                TimerConet: Date.now(),
-                TimerUltMensaje: Date.now()
-              };
-            // Agrego al Maps el abonado conectado
-            this._activeSubscriptions.set(context.IdAbonado, DataControlConect);
-
-            const validateArray = (element: any): boolean => {
-              return Array.isArray(element);
+              ...message.payload.variables,
+              TimerConet: Date.now(),
+              TimerUltMensaje: Date.now()
             };
-
-            // Busco el cliente se que se caba de conectar a ver si tengo algo que entregarle
+            this._activeSubscriptions.set(context.IdAbonado, DataControlConect);
+            const validateArray = (element: any): boolean => Array.isArray(element);
             const Data: any = await _JSONBuffer.findDataById(DataControlConect);
-
             if (Data) {
               let currentIndex = 0;
               const sendArrayElement = async () => {
                 if (currentIndex < Data.length) {
                   if (validateArray(Data)) {
                     const element = Data[currentIndex];
-
-                    // Aqui debo eleminar solo el elemento que acabo de enviar y no todo.... 
-                    // si tengo varios elementos lo estoy eliminando
-                    await _JSONBuffer.deleteData(_element => _element.id == element.id);
+                    await _JSONBuffer.deleteData(_element => _element.id === element.id);
                     publicarEvento(element.id, element.message);
                     currentIndex++;
                   }
@@ -124,20 +146,17 @@ class Nucleo {
                   clearInterval(intervalId);
                 }
               };
- 
+
               let intervalId: any;
               if (!validateArray(Data)) {
-                // Si tengo 1 solo elemento por entregar entonces espero 1Seg y se lo entrego
                 intervalId = setInterval(sendArrayElement, 1000);
               } else {
-                // Si tengo varios elementos por entregar espero 3Seg entre la entrega
-                // Tomando en cuenta que la app debe procesas lo que envio por eso espero....
                 intervalId = setInterval(sendArrayElement, 3000);
               }
             }
-            console.log('Suscripción iniciada:', DataControlConect);
+            console.log('Suscripción iniciada con payload:', DataControlConect);
           },
-        }, 
+        },
         wsocket
       );
 
@@ -145,10 +164,9 @@ class Nucleo {
       console.log(`🚀 Suscripciones listas en ws://localhost:${port}${apolloServer.graphqlPath}`);
     });
   }
-}
-
-const _GetEnv: GetEnv = new GetEnv()
+} 
+ 
+const _GetEnv: GetEnv = new GetEnv();
 const PortInit: Config[] = _GetEnv.Init();
-
 let _Nucleo: Nucleo = new Nucleo();
 PortInit.forEach(Port => _Nucleo.startServer(Port));

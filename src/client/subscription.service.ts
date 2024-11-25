@@ -45,6 +45,8 @@ export class SubscriptionService {
         }
 }
 
+
+// Prueba de Estress para conectar 20Mil Socket
 let i = 0;
 const _SubscriptionService: SubscriptionService[] = [];
 

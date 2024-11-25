@@ -60,6 +60,10 @@ export class SubscriptionService {
 let _SubscriptionService = new SubscriptionService();
 _SubscriptionService.subscribeToData('13457626');
 
+
+
+
+
 // Ejemplo de uso del método unsubscribe 
 // setTimeout(() => {
 //  _SubscriptionService.unsubscribeFromData();

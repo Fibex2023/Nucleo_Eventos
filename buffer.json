@@ -54,5 +54,397 @@
       "tipo_mensaje": "55",
       "mensaje": "{port: 5, l: 6}"
     }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "550",
+      "mensaje": "{port: 0, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "551",
+      "mensaje": "{port: 1, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "552",
+      "mensaje": "{port: 2, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "553",
+      "mensaje": "{port: 3, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "554",
+      "mensaje": "{port: 4, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "555",
+      "mensaje": "{port: 0, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "556",
+      "mensaje": "{port: 1, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "557",
+      "mensaje": "{port: 2, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "558",
+      "mensaje": "{port: 3, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "559",
+      "mensaje": "{port: 4, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5510",
+      "mensaje": "{port: 0, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5511",
+      "mensaje": "{port: 1, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5512",
+      "mensaje": "{port: 2, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5513",
+      "mensaje": "{port: 3, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5514",
+      "mensaje": "{port: 4, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5515",
+      "mensaje": "{port: 0, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5516",
+      "mensaje": "{port: 1, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5517",
+      "mensaje": "{port: 2, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5518",
+      "mensaje": "{port: 3, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5519",
+      "mensaje": "{port: 4, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "550",
+      "mensaje": "{port: 0, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "551",
+      "mensaje": "{port: 1, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "552",
+      "mensaje": "{port: 2, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "553",
+      "mensaje": "{port: 3, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "554",
+      "mensaje": "{port: 4, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "555",
+      "mensaje": "{port: 0, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "556",
+      "mensaje": "{port: 1, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "557",
+      "mensaje": "{port: 2, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "558",
+      "mensaje": "{port: 3, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "559",
+      "mensaje": "{port: 4, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5510",
+      "mensaje": "{port: 0, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5511",
+      "mensaje": "{port: 1, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5512",
+      "mensaje": "{port: 2, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5513",
+      "mensaje": "{port: 3, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5514",
+      "mensaje": "{port: 4, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5515",
+      "mensaje": "{port: 0, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5516",
+      "mensaje": "{port: 1, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5517",
+      "mensaje": "{port: 2, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5518",
+      "mensaje": "{port: 3, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "5519",
+      "mensaje": "{port: 4, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "550",
+      "mensaje": "{port: 0, l: 6}"
+    }
+  },
+  {
+    "id": "13457627",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "551",
+      "mensaje": "{port: 1, l: 6}"
+    }
+  },
+  {
+    "id": "MASIVA",
+    "message": {
+      "app": "averias",
+      "tipo_mensaje": "BELLO",
+      "mensaje": "{port: 5, l: 6}"
+    }
+  },
+  {
+    "id": "C0863",
+    "message": {
+      "app": "true",
+      "tipo_mensaje": "TEST",
+      "mensaje": "Test"
+    }
+  },
+  {
+    "id": "C0863",
+    "message": {
+      "app": "true",
+      "tipo_mensaje": "TEST",
+      "mensaje": "Test"
+    }
+  },
+  {
+    "id": "C0863",
+    "message": {
+      "app": "true",
+      "tipo_mensaje": "TEST",
+      "mensaje": "Test"
+    }
+  },
+  {
+    "id": "C0863",
+    "message": {
+      "app": "true",
+      "tipo_mensaje": "TEST",
+      "mensaje": "Test"
+    }
+  },
+  {
+    "id": "C0863",
+    "message": {
+      "app": "true",
+      "tipo_mensaje": "TEST",
+      "mensaje": "Test"
+    }
+  },
+  {
+    "id": "C0863",
+    "message": {
+      "app": "true",
+      "tipo_mensaje": "TEST",
+      "mensaje": "Test"
+    }
   }
 ]
