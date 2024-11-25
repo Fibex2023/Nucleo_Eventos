@@ -6,6 +6,7 @@ import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { Config, GetEnv } from './services/GetEnv.js';
+import { clsApiHttp } from './services/ApiHttp.js';
 
  
 
